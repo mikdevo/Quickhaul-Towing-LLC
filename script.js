@@ -31,8 +31,11 @@ function initializeConfig() {
     phoneLinks.forEach(link => {
         if (link) {
             link.href = `tel:${CONFIG.company.phoneLink}`;
-            if (link.textContent && link.textContent.includes('(')) {
-                link.textContent = CONFIG.company.phone;
+            link.setAttribute('data-tel', CONFIG.company.phoneLink);
+            if (link.textContent && (link.textContent.includes('(') || link.textContent.includes('Call Now') || link.textContent.includes('GET A TOW'))) {
+                if (!link.textContent.includes('GET A TOW') && !link.textContent.includes('Call Now')) {
+                    link.textContent = CONFIG.company.phone;
+                }
             }
         }
     });
@@ -199,6 +202,9 @@ if (mobileMenuToggle && navMenu) {
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+        if (this.href.startsWith('tel:') || this.href.startsWith('mailto:')) {
+            return;
+        }
         const href = this.getAttribute('href');
         if (href === '#' || href === '#!') return;
         
